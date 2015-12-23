@@ -1,7 +1,7 @@
 import urllib.request
 
 from bs4 import BeautifulSoup
-from twitter import Twitter, OAuth
+from twitter import Twitter, OAuth, api
 
 
 class TweetUpdate(object):
@@ -82,6 +82,11 @@ class TweetUpdate(object):
 
             urllib.request.urlcleanup()
             params = {'status': msg, 'media[]': img}
-            return self.twitter_api.statuses.update_with_media(**params)
-        else:
-            return self.twitter_api.statuses.update(status=msg)
+
+            try:
+                return self.twitter_api.statuses.update_with_media(**params)
+            except api.TwitterHTTPError as e:
+                print('Error: ', e)
+                print('Tweet without media.')
+
+        return self.twitter_api.statuses.update(status=msg)
