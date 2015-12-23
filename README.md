@@ -73,4 +73,4 @@ You can setup a cron job that runs every minute if you need to call feedr regula
 ### License
 -----------
 
-imgur-scraped is licensed under the WTFPLv2 license; refer to the LICENSE file.
+py-feedr is licensed under the WTFPLv2 license; refer to the LICENSE file.
