@@ -28,7 +28,7 @@ class MonitorFeedUpdate(object):
         # RSS feed
         self.feed_name = feed_name
         self.feed = feedparser.parse(feed_url)
-        self.latest_entry = self.feed.entries[0]  # for convenience
+        self.latest_entry = None
 
         # DatabaseManager object
         self.dbmanager = DatabaseManager(sqlite_db, feed_dbtable)
@@ -48,35 +48,38 @@ class MonitorFeedUpdate(object):
          * No new update: does nothing, logs.
         '''
 
-        unchecked_hash = (self.rss_latest_sha256(),)
-        check = self.dbmanager.check_for_existing_update(unchecked_hash)
-        localtime_log = time.strftime("%d %b %Y - %H:%M:%S", time.localtime())
+        for entry in reversed(self.feed.entries):
+            # use reverse for iterating from oldest to latest feed
+            self.latest_entry = entry
+            unchecked_hash = (self.rss_latest_sha256(),)
+            check = self.dbmanager.check_for_existing_update(unchecked_hash)
+            localtime_log = time.strftime("%d %b %Y - %H:%M:%S", time.localtime())
 
-        if check:
-            # FIXME: Use logging module
-            print(
-                '[{}] - {} -  No new update found.'.format(self.feed_name,
-                                                           localtime_log))
-        else:
-            # See https://github.com/iceTwy/py-feedr/issues/4
-            if self.is_duplicate_update():
-                self.tweetupdate.delete_last_tweet()
-                entry_table_hash = self.dbmanager.get_last_table_entry[1]
-                self.dbmanager.del_last_table_entry()
+            if check:
+                # FIXME: Use logging module
                 print(
-                    '[{0}] - {1} - Duplicate update in the feed.\n'
-                    '[{0}] - {1} - Deleted entry {} from the table, and its associated tweet\n'.
-                    format(self.feed_name, localtime_log, entry_table_hash))
-            self.dbmanager.create_latest_rss_entry(
-                self.latest_rss_entry_to_db())
-            self.tweetupdate.tweet_latest_update(self.latest_entry)
-            print('[{0}] - {1} - New update posted: {2}\n'
-                  '[{0}] - {1} - Update title: {3}\n'
-                  '[{0}] - {1} - Published: {4}\n'.format(
-                      self.feed_name, localtime_log,
-                      self.rss_latest_sha256()[:10],
-                      self.latest_entry['title'],
-                      self.latest_entry['published']))
+                    '[{}] - {} -  No new update found.'.format(self.feed_name,
+                                                               localtime_log))
+            else:
+                # See https://github.com/iceTwy/py-feedr/issues/4
+                if self.is_duplicate_update():
+                    self.tweetupdate.delete_last_tweet()
+                    entry_table_hash = self.dbmanager.get_last_table_entry[1]
+                    self.dbmanager.del_last_table_entry()
+                    print(
+                        '[{0}] - {1} - Duplicate update in the feed.\n'
+                        '[{0}] - {1} - Deleted entry {} from the table, and its associated tweet\n'.
+                        format(self.feed_name, localtime_log, entry_table_hash))
+                self.dbmanager.create_latest_rss_entry(
+                    self.latest_rss_entry_to_db())
+                self.tweetupdate.tweet_latest_update(self.latest_entry)
+                print('[{0}] - {1} - New update posted: {2}\n'
+                      '[{0}] - {1} - Update title: {3}\n'
+                      '[{0}] - {1} - Published: {4}\n'.format(
+                          self.feed_name, localtime_log,
+                          self.rss_latest_sha256()[:10],
+                          self.latest_entry['title'],
+                          self.latest_entry['published']))
 
     def is_duplicate_update(self):
         '''
