@@ -1,19 +1,62 @@
 {
-	"lowendbox": {
-		"name": "LowEndBox",
-		"db_table": "lowendbox",
-		"url": "http://lowendbox.com/feed/"
+	"devopsreactions": {
+		"name": "DevOps Reactions",
+		"db_table": "devopsreactions",
+		"url": "http://devopsreactions.tumblr.com/rss"
 	},
-	"lowendtalk": {
-		"name": "LowEndTalk",
-		"db_table": "lowendtalk",
-		"url": "http://lowendtalk.com/categories/offers/feed.rss"
+	"xkcd": {
+		"name": "xkcd",
+		"db_table": "xkcd",
+		"url": "http://xkcd.com/rss.xml"
 	},
-	"dailyserverdeals": {
-		"name": "Daily Server Deals",
-		"db_table": "dailyserverdeals",
-		"url": "http://dailyserverdeals.com/offers/feed/"
+	"python_jobbole": {
+		"name": "Python - 伯乐在线",
+		"db_table": "python_jobbole",
+		"url": "http://python.jobbole.com/feed/"
+	},
+	"darknet": {
+		"name": "Darknet",
+		"db_table": "darknet",
+		"url": "http://feeds.feedburner.com/darknethackers"
+	},
+	"cve": {
+		"name": "CVE",
+		"db_table": "cve",
+		"url": "https://nvd.nist.gov/download/nvd-rss.xml"
+	},
+	"freebuf": {
+		"name": "FreeBuf.COM | 关注黑客与极客",
+		"db_table": "freebuf",
+		"url": "http://www.freebuf.com/feed"
+	},
+	"lwn": {
+		"name": "LWN.net",
+		"db_table": "lwn",
+		"url": "https://lwn.net/headlines/rss"
+	},
+	"thn": {
+		"name": "The Hacker News",
+		"db_table": "thn",
+		"url": "http://feeds.feedburner.com/TheHackersNews"
+	},
+	"wooyun": {
+		"name": "WooYun知识库",
+		"db_table": "wooyun",
+		"url": "http://drops.wooyun.org/feed"
+	},
+	"trendmicro": {
+		"name": "趨勢資安",
+		"db_table": "trendmicro",
+		"url": "http://blog.trendmicro.com.tw/?feed=rss2"
+	},
+	"hitcon_kb": {
+		"name": "HITCON Knowledge Base",
+		"db_table": "hitcon_kb",
+		"url": "http://kb.hitcon.org/rss"
+	},
+	"techug": {
+		"name": "程序师",
+		"db_table": "techug",
+		"url": "http://www.techug.com/feed"
 	}
 }
-
-
