@@ -2,6 +2,7 @@ import urllib.request
 from collections import OrderedDict
 
 from bs4 import BeautifulSoup
+from html2text import html2text
 from twitter import Twitter, OAuth, api
 
 
@@ -82,17 +83,16 @@ class TweetUpdate(object):
 
         msg['title'] = feed_entry['title']
         if msg_length() - msg_limit_length > 0:
-            stripped_title = feed_entry['title'][:msg_limit_length - 3] + '...'
-            msg['title'] = stripped_title
+            msg['title'] = msg['title'][:msg_limit_length - 3] + '...'
 
         elif 'summary' in feed_entry:
-            msg['summary'] = feed_entry['summary']
+            msg['summary'] = html2text(feed_entry['summary']).strip()
 
             if msg_length() - msg_limit_length > 0:
                 summary_length = msg_limit_length - msg_length()
 
                 stripped_summary = '{}{}'.format(
-                    feed_entry['summary'][:summary_length - 3],
+                    msg['summary'][:summary_length - 3],
                     '...'
                 )
                 msg['summary'] = stripped_summary
