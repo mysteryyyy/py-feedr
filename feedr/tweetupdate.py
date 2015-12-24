@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 from collections import OrderedDict
 
 from bs4 import BeautifulSoup
@@ -73,17 +74,20 @@ class TweetUpdate(object):
 
         msg = OrderedDict((
             ('title', None),
-            ('summary', None),
             ('url', None),
+            ('summary', None),
             ('img_url', None),
         ))
 
         def msg_length():
             return len('\n'.join(filter(bool, msg.values())))
 
-        msg['title'] = feed_entry['title']
+        msg['title'] = feed_entry['title'].strip()
         if msg_length() - msg_limit_length > 0:
-            msg['title'] = msg['title'][:msg_limit_length - 3] + '...'
+            msg['title'] = '{}{}'.format(
+                msg['title'][:msg_limit_length - 3],
+                '.'*3,
+            )
 
         elif 'summary' in feed_entry:
             msg['summary'] = html2text(feed_entry['summary']).strip()
@@ -93,7 +97,7 @@ class TweetUpdate(object):
 
                 stripped_summary = '{}{}'.format(
                     msg['summary'][:summary_length - 3],
-                    '...'
+                    '.'*3,
                 )
                 msg['summary'] = stripped_summary
 
@@ -101,13 +105,22 @@ class TweetUpdate(object):
         print('\n'.join(filter(bool, msg.values())))
         msg['url'] = url
 
-        if img_url:
+        try:
             tempfile, headers = urllib.request.urlretrieve(img_url)
+        except TypeError:
+            pass    # img_url is None
+        except urllib.error.URLError:
+            print('Error while urlretrieving media, tweet with media url.')
+            msg['img_url'] = img_url
+        else:
             with open(tempfile, 'rb') as imgfile:
                 img = imgfile.read()
 
             urllib.request.urlcleanup()
-            params = {'status': '\n'.join(msg), 'media[]': img}
+            params = {
+                'status': '\n'.join(filter(bool, msg.values())),
+                'media[]': img,
+            }
 
             try:
                 return self.twitter_api.statuses.update_with_media(**params)
