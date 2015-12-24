@@ -86,9 +86,10 @@ class DatabaseManager(object):
         try:
             # ! WARNING : Vulnerable to SQLi with forged table name
             # Ugly workaround for binding a table name
-            c.execute("SELECT * FROM {} WHERE id = (SELECT MAX(id) FROM {})".format(table))
+            c.execute(
+                "SELECT * FROM {} WHERE id = (SELECT MAX(id) FROM {})".format(table))
             entry = c.fetchone()
-        except IndexError: # empty table
+        except IndexError:  # empty table
             entry = None
 
         conn.commit()

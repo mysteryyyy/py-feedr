@@ -71,7 +71,7 @@ class TweetUpdate(object):
 
         msg = '{}\n'.format(feed_entry['title'])
         if len(msg) - msg_limit_length > 0:
-            stripped_title = feed_entry['title'][:msg_limit_length-3] + '...'
+            stripped_title = feed_entry['title'][:msg_limit_length - 3] + '...'
             msg = '{}\n'.format(stripped_title)
         msg += url
 

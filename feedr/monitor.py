@@ -53,7 +53,8 @@ class MonitorFeedUpdate(object):
             self.latest_entry = entry
             unchecked_hash = (self.rss_latest_sha256(),)
             check = self.dbmanager.check_for_existing_update(unchecked_hash)
-            localtime_log = time.strftime("%d %b %Y - %H:%M:%S", time.localtime())
+            localtime_log = time.strftime(
+                "%d %b %Y - %H:%M:%S", time.localtime())
 
             if check:
                 # FIXME: Use logging module

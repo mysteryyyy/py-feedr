@@ -9,16 +9,19 @@ from feedr.monitor import MonitorFeedUpdate
 if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("config", type=str,
-                           help="path to the feedr configuration file")
+    argparser.add_argument(
+        "config",
+        type=str,
+        help="path to the feedr configuration file",
+    )
     args = argparser.parse_args()
 
     configparser = SafeConfigParser()
     cfg = configparser.read(args.config)
     if not cfg:
         raise ValueError(
-            'Could not find configuration file {}'.format(
-                args.config))
+            'Could not find configuration file {}'.format(args.config)
+        )
 
     feedlist_location = configparser['feeds']['feedlist']
     with open(feedlist_location) as f:
@@ -38,4 +41,5 @@ if __name__ == "__main__":
             oauth_key,
             oauth_secret,
             consumer_key,
-            consumer_secret).monitor()
+            consumer_secret
+        ).monitor()
