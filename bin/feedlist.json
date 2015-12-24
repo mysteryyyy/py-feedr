@@ -58,5 +58,60 @@
 		"name": "程序师",
 		"db_table": "techug",
 		"url": "http://www.techug.com/feed"
+	},
+	"coolshell": {
+		"name": "酷壳",
+		"db_table": "coolshell",
+		"url": "http://coolshell.cn/feed"
+	},
+	"csdn_programmer": {
+		"name": "CSDN 程序员杂志",
+		"db_table": "csdn_programmer",
+		"url": "http://programmer.csdn.net/rss_programmer.html"
+	},
+	"wired_tech": {
+		"name": "WIRED » Tech",
+		"db_table": "wired_tech",
+		"url": "http://www.wired.com/category/gear/feed/"
+	},
+	"wired_security": {
+		"name": "WIRED » Security",
+		"db_table": "wired_security",
+		"url": "http://www.wired.com/category/threatlevel/feed/"
+	},
+	"hacker_news": {
+		"name": "Hacker News",
+		"db_table": "hacker_news",
+		"url": "https://news.ycombinator.com/rss"
+	},
+	"ithome": {
+		"name": "iThome 新聞",
+		"db_table": "ithome",
+		"url": "http://www.ithome.com.tw/rss"
+	},
+	"solidot": {
+		"name": "Solidot",
+		"db_table": "solidot",
+		"url": "http://solidot.org.feedsportal.com/c/33236/f/556826/index.rss"
+	},
+	"slashdot": {
+		"name": "Slashdot",
+		"db_table": "slashdot",
+		"url": "http://rss.slashdot.org/Slashdot/slashdotMain"
+	},
+	"bugtraq": {
+		"name": "Bugtraq",
+		"db_table": "bugtraq",
+		"url": "http://seclists.org/rss/bugtraq.rss"
+	},
+	"exploit_db": {
+		"name": "Exploit-DB Updates",
+		"db_table": "exploit_db",
+		"url": "https://www.exploit-db.com/rss.xml"
+	},
+	"archlinux_news": {
+		"name": "Arch Linux News",
+		"db_table": "archlinux_news",
+		"url": "https://www.archlinux.org/feeds/news/"
 	}
 }
