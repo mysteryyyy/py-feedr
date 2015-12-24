@@ -85,8 +85,8 @@ class TweetUpdate(object):
 
             try:
                 return self.twitter_api.statuses.update_with_media(**params)
-            except api.TwitterHTTPError as e:
-                print('Error: ', e)
-                print('Tweet without media.')
+            except api.TwitterHTTPError:
+                print('Cannot tweet with media, tweet with media url.')
+                msg += '\n' + img_url
 
         return self.twitter_api.statuses.update(status=msg)
