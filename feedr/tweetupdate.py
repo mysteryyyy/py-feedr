@@ -1,4 +1,5 @@
 import urllib.request
+from collections import OrderedDict
 
 from bs4 import BeautifulSoup
 from twitter import Twitter, OAuth, api
@@ -58,8 +59,8 @@ class TweetUpdate(object):
         '''
 
         msg_limit_length = 140
-        TWEET_URL_LENGTH = 23
-        TWEET_IMG_LENGTH = 24
+        TWEET_URL_LENGTH = 24
+        TWEET_IMG_LENGTH = 25
 
         url = feed_entry['link']
         if url:
@@ -69,11 +70,36 @@ class TweetUpdate(object):
         if img_url:
             msg_limit_length -= TWEET_IMG_LENGTH
 
-        msg = '{}\n'.format(feed_entry['title'])
-        if len(msg) - msg_limit_length > 0:
+        msg = OrderedDict((
+            ('title', None),
+            ('summary', None),
+            ('url', None),
+            ('img_url', None),
+        ))
+
+        def msg_length():
+            return len('\n'.join(filter(bool, msg.values())))
+
+        msg['title'] = feed_entry['title']
+        if msg_length() - msg_limit_length > 0:
             stripped_title = feed_entry['title'][:msg_limit_length - 3] + '...'
-            msg = '{}\n'.format(stripped_title)
-        msg += url
+            msg['title'] = stripped_title
+
+        elif 'summary' in feed_entry:
+            msg['summary'] = feed_entry['summary']
+
+            if msg_length() - msg_limit_length > 0:
+                summary_length = msg_limit_length - msg_length()
+
+                stripped_summary = '{}{}'.format(
+                    feed_entry['summary'][:summary_length - 3],
+                    '...'
+                )
+                msg['summary'] = stripped_summary
+
+        print(msg_length())
+        print('\n'.join(filter(bool, msg.values())))
+        msg['url'] = url
 
         if img_url:
             tempfile, headers = urllib.request.urlretrieve(img_url)
@@ -81,12 +107,22 @@ class TweetUpdate(object):
                 img = imgfile.read()
 
             urllib.request.urlcleanup()
-            params = {'status': msg, 'media[]': img}
+            params = {'status': '\n'.join(msg), 'media[]': img}
 
             try:
                 return self.twitter_api.statuses.update_with_media(**params)
             except api.TwitterHTTPError:
                 print('Cannot tweet with media, tweet with media url.')
-                msg += '\n' + img_url
+                msg['img_url'] = img_url
 
-        return self.twitter_api.statuses.update(status=msg)
+        try:
+            return self.twitter_api.statuses.update(
+                status='\n'.join(filter(bool, msg.values()))
+            )
+        except api.TwitterHTTPError:
+            msg.pop('summary')
+            print(msg_length())
+            print('\n'.join(filter(bool, msg.values())))
+            return self.twitter_api.statuses.update(
+                status='\n'.join(filter(bool, msg.values()))
+            )
