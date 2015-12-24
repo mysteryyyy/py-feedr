@@ -80,7 +80,7 @@ class MonitorFeedUpdate(object):
                           self.feed_name, localtime_log,
                           self.rss_latest_sha256()[:10],
                           self.latest_entry['title'],
-                          self.latest_entry['published']))
+                          self.latest_entry.get('published', '')))
 
     def is_duplicate_update(self):
         '''
@@ -114,9 +114,12 @@ class MonitorFeedUpdate(object):
         '''
         entry = self.latest_entry
         genhash = hashlib.sha256()
+
         genhash.update(
             (
-                entry['published'] + entry['title'] + entry['link']
+                entry.get('published', '') +
+                entry['title'] +
+                entry['link']
             ).encode('utf-8')
         )
         return genhash.hexdigest()
@@ -128,7 +131,9 @@ class MonitorFeedUpdate(object):
             (sha256_hash text, date text, title text, url text)
         '''
         entry = self.latest_entry
-        update = (self.rss_latest_sha256(), entry['published'], entry['title'],
+        update = (self.rss_latest_sha256(),
+                  entry.get('published', ''),
+                  entry['title'],
                   entry['link'])
 
         return update
