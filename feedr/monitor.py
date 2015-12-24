@@ -59,8 +59,10 @@ class MonitorFeedUpdate(object):
             if check:
                 # FIXME: Use logging module
                 print(
-                    '[{}] - {} -  No new update found.'.format(self.feed_name,
-                                                               localtime_log))
+                    '[{}] - {} - {} -  No new update found.'.format(
+                        self.feed_name,
+                        entry['title'],
+                        localtime_log))
             else:
                 # See https://github.com/iceTwy/py-feedr/issues/4
                 if self.is_duplicate_update():
@@ -69,10 +71,12 @@ class MonitorFeedUpdate(object):
                     self.dbmanager.del_last_table_entry()
                     print(
                         '[{0}] - {1} - Duplicate update in the feed.\n'
-                        '[{0}] - {1} - Deleted entry {} from the table, and its associated tweet\n'.
-                        format(self.feed_name, localtime_log, entry_table_hash))
-                self.dbmanager.create_latest_rss_entry(
-                    self.latest_rss_entry_to_db())
+                        '[{0}] - {1} - Deleted entry {} from the table, '
+                        ' and its associated tweet\n'.format(
+                            self.feed_name,
+                            localtime_log,
+                            entry_table_hash))
+
                 self.tweetupdate.tweet_latest_update(self.latest_entry)
                 print('[{0}] - {1} - New update posted: {2}\n'
                       '[{0}] - {1} - Update title: {3}\n'
@@ -81,6 +85,8 @@ class MonitorFeedUpdate(object):
                           self.rss_latest_sha256()[:10],
                           self.latest_entry['title'],
                           self.latest_entry.get('published', '')))
+                self.dbmanager.create_latest_rss_entry(
+                    self.latest_rss_entry_to_db())
 
     def is_duplicate_update(self):
         '''
