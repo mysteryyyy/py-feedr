@@ -109,9 +109,24 @@
 		"db_table": "exploit_db",
 		"url": "https://www.exploit-db.com/rss.xml"
 	},
-	"archlinux_news": {
-		"name": "Arch Linux News",
-		"db_table": "archlinux_news",
-		"url": "https://www.archlinux.org/feeds/news/"
+	"inside": {
+		"name": "Inside 硬塞的網路趨勢觀察",
+		"db_table": "inside",
+		"url": "http://feeds.feedburner.com/inside-blog-taiwan"
+	},
+	"logdown_hot_today": {
+		"name": "Hot Today of Logdown",
+		"db_table": "logdown_hot_today",
+		"url": "http://feeds.feedburner.com/logdown/hot_today"
+	},
+	"github_trends_all_daily": {
+		"name": "GitHub Trends - All Languages - Daily",
+		"db_table": "github_trends_all_daily",
+		"url": "http://github-trends.ryotarai.info/rss/github_trends_all_daily.rss"
+	},
+	"github_trends_python_daily": {
+		"name": "GitHub Trends - Python - Daily",
+		"db_table": "github_trends_python_daily",
+		"url": "http://github-trends.ryotarai.info/rss/github_trends_python_daily.rss"
 	}
 }
