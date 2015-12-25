@@ -79,10 +79,10 @@
 		"db_table": "wired_security",
 		"url": "http://www.wired.com/category/threatlevel/feed/"
 	},
-	"hacker_news": {
-		"name": "Hacker News",
-		"db_table": "hacker_news",
-		"url": "https://news.ycombinator.com/rss"
+	"hnrss_points": {
+		"name": "Hacker News points > 100",
+		"db_table": "hnrss_points",
+		"url": "http://hnrss.org/newest?points=100"
 	},
 	"ithome": {
 		"name": "iThome 新聞",
@@ -114,19 +114,24 @@
 		"db_table": "inside",
 		"url": "http://feeds.feedburner.com/inside-blog-taiwan"
 	},
-	"logdown_hot_today": {
-		"name": "Hot Today of Logdown",
-		"db_table": "logdown_hot_today",
-		"url": "http://feeds.feedburner.com/logdown/hot_today"
+	"logdown_hot_week": {
+		"name": "Hot week of Logdown",
+		"db_table": "logdown_hot_week",
+		"url": "http://feeds.feedburner.com/logdown/hot_week"
 	},
-	"github_trends_all_daily": {
-		"name": "GitHub Trends - All Languages - Daily",
-		"db_table": "github_trends_all_daily",
-		"url": "http://github-trends.ryotarai.info/rss/github_trends_all_daily.rss"
+	"history_pansci_asia": {
+		"name": "科科史上的今天",
+		"db_table": "history_pansci_asia",
+		"url": "http://history.pansci.asia/rss"
 	},
-	"github_trends_python_daily": {
-		"name": "GitHub Trends - Python - Daily",
-		"db_table": "github_trends_python_daily",
-		"url": "http://github-trends.ryotarai.info/rss/github_trends_python_daily.rss"
+	"techcrunch": {
+		"name": "TechCrunch",
+		"db_table": "techcrunch",
+		"url": "http://feeds.feedburner.com/TechCrunch/"
+	},
+	"careercup": {
+		"name": "CareerCup",
+		"db_table": "careercup",
+		"url": "http://feeds.feedburner.com/Careercup"
 	}
 }
