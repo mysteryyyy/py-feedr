@@ -1,5 +1,6 @@
-import urllib.request
 import urllib.error
+import urllib.parse
+import urllib.request
 from collections import OrderedDict
 
 from bs4 import BeautifulSoup
@@ -104,6 +105,12 @@ class TweetUpdate(object):
         print(msg_length())
         print('\n'.join(filter(bool, msg.values())))
         msg['url'] = url
+
+        img_url_splited = urllib.parse.urlsplit(img_url)
+        img_url = img_url_splited._replace(
+            netloc=urllib.parse.quote(img_url_splited.netloc),
+            path=urllib.parse.quote(img_url_splited.path),
+        ).geturl()
 
         try:
             tempfile, headers = urllib.request.urlretrieve(img_url)
