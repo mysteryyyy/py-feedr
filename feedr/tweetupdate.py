@@ -57,6 +57,8 @@ class TweetUpdate(object):
                 print(img_tag)
                 print("This <img> tag has no <src>")
                 return None
+            except TypeError:   # entry_html doesn't have <img> tag
+                return None
 
     def tweet_latest_update(self, feed_entry):
         '''
