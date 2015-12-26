@@ -51,9 +51,11 @@ class TweetUpdate(object):
             soup = BeautifulSoup(entry_html, 'html.parser')
             img_tag = soup.find('img')
 
-            if img_tag:
+            try:
                 return img_tag['src']
-            else:
+            except KeyError:
+                print(img_tag)
+                print("This <img> tag has no <src>")
                 return None
 
     def tweet_latest_update(self, feed_entry):
