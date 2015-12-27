@@ -166,11 +166,16 @@ class TweetUpdate(object):
 
         try:    # retrieve the image
             tempfile, headers = urllib.request.urlretrieve(self.msg['img_url'])
-        except TypeError:
+        except TypeError as e:
+            pprint(e)
             pprint('img_url is None, tweet with media url.')
             raise
-        except urllib.error.URLError:
+        except urllib.error.URLError as e:
+            pprint(e)
             pprint('Error while urlretrieving media, tweet with media url.')
+            raise
+        except:
+            traceback.print_exc()
             raise
 
         with open(tempfile, 'rb') as imgfile:
