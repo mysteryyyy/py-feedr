@@ -6,7 +6,6 @@ from collections import OrderedDict
 from pprint import pprint
 
 from bs4 import BeautifulSoup
-from html2text import html2text
 from twitter import Twitter, OAuth, api
 
 
@@ -132,9 +131,10 @@ class TweetUpdate(object):
                 self.msg['title'] = self.msg['title'][:msg_limit_length]
 
         try:
-            self.msg['summary'] = html2text(
-                ' '.join(feed_entry['summary'].split('\n')).strip()
-            )
+            soup = BeautifulSoup(feed_entry['summary'], 'html.parser')
+            self.msg['summary'] = ' '.join(
+                map(str.strip, soup.get_text().split('\n'))
+            ).strip()
         except:
             pass
         else:
