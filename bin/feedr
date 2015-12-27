@@ -32,7 +32,8 @@ if __name__ == "__main__":
     consumer_secret = configparser['twitter']['consumer_secret']
     sqlite_db = configparser['sqlite']['db_path']
 
-    for feed in sorted(feedlist.keys()):
+    for i, feed in enumerate(sorted(feedlist.keys()), 1):
+        print('({}/{}) {}'.format(i, len(feedlist), feedlist[feed]['name']))
         MonitorFeedUpdate(
             feedlist[feed]['name'],
             feedlist[feed]['url'],

@@ -58,11 +58,7 @@ class MonitorFeedUpdate(object):
 
             if check:
                 # FIXME: Use logging module
-                print(
-                    '[{}] - {} - {} -  No new update found.'.format(
-                        self.feed_name,
-                        entry['title'],
-                        localtime_log))
+                pass
             else:
                 # See https://github.com/iceTwy/py-feedr/issues/4
                 if self.is_duplicate_update():
