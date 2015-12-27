@@ -37,6 +37,13 @@ class MonitorFeedUpdate(object):
         self.tweetupdate = TweetUpdate(oauth_key, oauth_secret, consumer_key,
                                        consumer_secret)
 
+    def get_latest_entry_date(self):
+        for key in ('published', 'updated'):
+            if key in self.latest_entry:
+                return self.latest_entry[key]
+        else:
+            return ''
+
     def monitor(self):
         '''
         Monitors the RSS feed for a new update.
@@ -81,7 +88,8 @@ class MonitorFeedUpdate(object):
                           self.feed_name, localtime_log,
                           self.rss_latest_sha256()[:10],
                           self.latest_entry['title'],
-                          self.latest_entry.get('published', '')))
+                          self.get_latest_entry_date(),
+                      ))
                 self.dbmanager.create_latest_rss_entry(
                     self.latest_rss_entry_to_db())
 
@@ -115,15 +123,13 @@ class MonitorFeedUpdate(object):
 
         Returns the hex digest of the SHA-256 hash.
         '''
-        entry = self.latest_entry
         genhash = hashlib.sha256()
 
         genhash.update(
-            (
-                entry.get('published', '') +
-                entry['title'] +
-                entry['link']
-            ).encode('utf-8')
+            (self.get_latest_entry_date() +
+             self.latest_entry['title'] +
+             self.latest_entry['link'])
+            .encode('utf-8')
         )
         return genhash.hexdigest()
 
@@ -133,10 +139,9 @@ class MonitorFeedUpdate(object):
         database using the following structure:
             (sha256_hash text, date text, title text, url text)
         '''
-        entry = self.latest_entry
         update = (self.rss_latest_sha256(),
-                  entry.get('published', ''),
-                  entry['title'],
-                  entry['link'])
+                  self.get_latest_entry_date(),
+                  self.latest_entry['title'],
+                  self.latest_entry['link'])
 
         return update
