@@ -133,5 +133,10 @@
 		"name": "CareerCup",
 		"db_table": "careercup",
 		"url": "http://feeds.feedburner.com/Careercup"
+	},
+	"twreporter": {
+		"name": "報導者",
+		"db_table": "twreporter",
+		"url": "https://www.twreporter.org/a/rss2.xml"
 	}
 }
