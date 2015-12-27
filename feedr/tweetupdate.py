@@ -33,6 +33,10 @@ class TweetUpdate(object):
             ('img_url', ''),
         ))
 
+    def reset_msg(self):
+        for key in self.msg:
+            self.msg[key] = ''
+
     def delete_last_tweet(self):
         '''
         Deletes the last tweet in the timeline.
@@ -74,12 +78,26 @@ class TweetUpdate(object):
             return img_url
 
     def msg_to_string(self):
+        '''
+        Combine the elements in msg into a string.
+        Add '\n' between each element.
+        '''
+
         return '\n'.join(filter(bool, self.msg.values()))
 
     def msg_length(self):
+        '''
+        Get the length of the msg to be sent as a tweet.
+        '''
+
         return len(self.msg_to_string())
 
-    def get_msg_limit_length_and_set_urls(self, feed_entry):
+    def get_msg_limit_length_and_urls(self, feed_entry):
+        '''
+        Calculating the limit length of current tweet
+        and returns the url and img_url for cram_the_msg()
+        '''
+
         TWEET_URL_LENGTH = 24
         TWEET_IMG_LENGTH = 25
         msg_limit_length = 140
@@ -87,58 +105,66 @@ class TweetUpdate(object):
         try:
             url = feed_entry['link']
         except:
-            pass
-        else:
+            url = ''
+        if url:
             msg_limit_length -= TWEET_URL_LENGTH
-            self.msg['url'] = url
 
         try:
             img_url = self.get_entry_img_url(feed_entry)
         except:
-            pass
-        else:
+            img_url = ''
+        if img_url:
             msg_limit_length -= TWEET_IMG_LENGTH
-            self.msg['img_url'] = img_url
 
-        return msg_limit_length
+        return msg_limit_length, url, img_url
 
-    def cram_the_msg(self, feed_entry, msg_limit_length):
+    def cram_the_msg(self, feed_entry, msg_limit_length, url, img_url):
+        '''
+        Cram the contents in msg by calculating the limit length of a tweet.
+        '''
+
         try:
             self.msg['title'] = feed_entry['title'].strip()
         except:
             pass
-        if self.msg_length() > msg_limit_length:
-            self.msg['title'] = self.msg['title'][:msg_limit_length]
+        else:
+            if self.msg_length() > msg_limit_length:
+                self.msg['title'] = self.msg['title'][:msg_limit_length]
 
         try:
-            self.msg['summary'] = html2text(feed_entry['summary']).strip()
+            self.msg['summary'] = html2text(
+                ' '.join(feed_entry['summary'].split('\n')).strip()
+            )
         except:
             pass
-        if self.msg_length() > msg_limit_length:
-            trimmed_summary_index = msg_limit_length - self.msg_length()
-            self.msg['summary'] = self.msg['summary'][:trimmed_summary_index]
+        else:
+            if self.msg_length() > msg_limit_length:
+                print('msg({} chars) is longer than {}.'.format(
+                    self.msg_length(), msg_limit_length
+                ))
+                print('summary before trimmed:\n{}'.format(
+                    self.msg['summary']
+                ))
 
-        pprint(self.msg_length())
-        pprint(self.msg)
+                index_trimmed = msg_limit_length - self.msg_length()
+                self.msg['summary'] = self.msg['summary'][:index_trimmed]
 
-    def tweet_with_no_media(self):
-        try:
-            return self.twitter_api.statuses.update(
-                status=self.msg_to_string()
-            )
-        except api.TwitterHTTPError:
-            pprint("Maybe message is too long, remove summary")
-            self.msg.pop('summary')
-            pprint(self.msg_length())
-            pprint(self.msg)
-            return self.twitter_api.statuses.update(
-                status=self.msg_to_string()
-            )
-        except:
-            traceback.print_exc()
+                print('summary after trimmed:\n{}'.format(self.msg['summary']))
+                print('trimmed msg: {} chars.'.format(self.msg_length()))
+
+        self.msg['url'] = url
+        self.msg['img_url'] = img_url
 
     def tweet_with_media(self):
-        try:
+        '''
+        Send a tweet with image.
+        Try to retrieve the image first,
+        then remove the img_url in msg and tweet with the image.
+        If fail in uploading, add back the img_url into msg
+        and tweet with img_url only.
+        '''
+
+        try:    # retrieve the image
             tempfile, headers = urllib.request.urlretrieve(self.msg['img_url'])
         except TypeError:
             pprint('img_url is None, tweet with media url.')
@@ -146,31 +172,53 @@ class TweetUpdate(object):
         except urllib.error.URLError:
             pprint('Error while urlretrieving media, tweet with media url.')
             raise
-        else:
-            with open(tempfile, 'rb') as imgfile:
-                img = imgfile.read()
 
-            urllib.request.urlcleanup()
-            params = {
-                'status': self.msg_to_string(),
-                'media[]': img,
-            }
+        with open(tempfile, 'rb') as imgfile:
+            img = imgfile.read()
 
-            try:
-                return self.twitter_api.statuses.update_with_media(**params)
-            except api.TwitterHTTPError:
-                pprint('Cannot tweet with media, tweet with media url.')
-                raise
-            except:
-                traceback.print_exc()
+        urllib.request.urlcleanup()
+        img_url = self.msg.pop('img_url')
+        params = {
+            'status': self.msg_to_string(),
+            'media[]': img,
+        }
+        try:
+            return self.twitter_api.statuses.update_with_media(**params)
+        except api.TwitterHTTPError:
+            pprint('Cannot tweet with media, tweet with media url.')
+            del img
+            self.msg['img_url'] = img_url
+            raise
+        except:
+            traceback.print_exc()
+
+    def tweet_with_no_media(self):
+        '''
+        Send a pure text tweet.
+        '''
+
+        try:
+            return self.twitter_api.statuses.update(
+                status=self.msg_to_string()
+            )
+        except api.TwitterHTTPError as e:
+            pprint(self.msg_length())
+            pprint(self.msg)
+            pprint("Cannot send this tweet.")
+            pprint(e)
+        except:
+            traceback.print_exc()
 
     def tweet_latest_update(self, feed_entry):
         '''
         Tweets the latest update, logs when doing so.
         '''
 
-        msg_limit_length = self.get_msg_limit_length_and_set_urls(feed_entry)
-        self.cram_the_msg(feed_entry, msg_limit_length)
+        msg_limit_length, url, img_url = self.get_msg_limit_length_and_urls(
+            feed_entry
+        )
+        self.cram_the_msg(feed_entry, msg_limit_length, url, img_url)
+
         try:
             self.tweet_with_media()
         except (TypeError, urllib.error.URLError, api.TwitterHTTPError):

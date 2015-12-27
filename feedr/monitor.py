@@ -78,6 +78,7 @@ class MonitorFeedUpdate(object):
                             entry_table_hash))
 
                 self.tweetupdate.tweet_latest_update(self.latest_entry)
+                self.tweetupdate.reset_msg()
                 print('[{0}] - {1} - New update posted: {2}\n'
                       '[{0}] - {1} - Update title: {3}\n'
                       '[{0}] - {1} - Published: {4}\n'.format(
