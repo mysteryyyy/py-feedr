@@ -148,5 +148,10 @@
 		"name": "编程派",
 		"db_table": "codingpy",
 		"url": "http://codingpy.com/feed/"
+    },
+    "themorningpaper": {
+		"name": "The Morning Paper",
+		"db_table": "themorningpaper",
+		"url": "http://blog.acolyer.org/feed/"
     }
 }
