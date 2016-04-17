@@ -114,11 +114,6 @@
 		"db_table": "inside",
 		"url": "http://feeds.feedburner.com/inside-blog-taiwan"
 	},
-	"logdown_hot_week": {
-		"name": "Hot week of Logdown",
-		"db_table": "logdown_hot_week",
-		"url": "http://feeds.feedburner.com/logdown/hot_week"
-	},
 	"history_pansci_asia": {
 		"name": "科科史上的今天",
 		"db_table": "history_pansci_asia",
