@@ -4,6 +4,7 @@ import urllib.request
 import traceback
 from collections import OrderedDict
 from pprint import pprint
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 from twitter import Twitter, OAuth, api
@@ -211,6 +212,8 @@ class TweetUpdate(object):
             pprint(self.msg)
             pprint("Cannot send this tweet.")
             pprint(e)
+            print(datetime.now())
+            print()
         except:
             traceback.print_exc()
 
