@@ -149,4 +149,9 @@
 		"db_table": "themorningpaper",
 		"url": "http://blog.acolyer.org/feed/"
     }
+     "嘶吼RoarTalk": {
+		"name": "嘶吼RoarTalk",
+		"db_table": "4hou",
+		"url": "http://www.4hou.com/feed"
+    }
 }
